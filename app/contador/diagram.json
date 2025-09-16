@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb1",
+      "top": -137.4,
+      "left": -35.6,
+      "attrs": { "color": "#eeefed" }
+    },
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 96.6, "left": -10.2, "attrs": {} },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": -224.4,
+      "left": 42.2,
+      "attrs": { "color": "limegreen" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": -224.4,
+      "left": -34.6,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": -43.2,
+      "left": -0.55,
+      "rotate": 90,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r3",
+      "top": -43.2,
+      "left": -38.95,
+      "rotate": 90,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-7segment",
+      "id": "sevseg1",
+      "top": -70.98,
+      "left": 106.16,
+      "attrs": { "digits": "2", "common": "cathode", "colon": "" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 13.55,
+      "left": 96,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r4",
+      "top": 3.95,
+      "left": 76.8,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r5",
+      "top": -82.45,
+      "left": 172.8,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r6",
+      "top": -92.05,
+      "left": 86.4,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r7",
+      "top": -82.45,
+      "left": 76.8,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r8",
+      "top": 13.55,
+      "left": 163.2,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r9",
+      "top": 3.95,
+      "left": 172.8,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r10",
+      "top": -92.05,
+      "left": 163.2,
+      "attrs": { "value": "1000" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r11",
+      "top": -168.55,
+      "left": 229,
+      "rotate": 180,
+      "attrs": { "value": "1000" }
+    }
+  ],
+  "connections": [
+    [ "led3:C", "bb1:1t.a", "black", [ "v28.8", "h10" ] ],
+    [ "uno:GND.1", "bb1:bn.25", "black", [ "v-19.2", "h152.3" ] ],
+    [ "bb1:1b.j", "bb1:bn.1", "black", [ "v9.6", "h8" ] ],
+    [ "bb1:5b.j", "bb1:bn.5", "black", [ "v9.6", "h8" ] ],
+    [ "led2:C", "bb1:5t.a", "black", [ "v28.8", "h-28.4" ] ],
+    [ "led2:A", "bb1:6t.a", "red", [ "v28.8", "h-28.8" ] ],
+    [ "led3:A", "bb1:2t.a", "red", [ "v28.8", "h9.6" ] ],
+    [ "bb1:6t.e", "uno:2", "red", [ "v134.4", "h187.9" ] ],
+    [ "bb1:2t.e", "uno:3", "red", [ "v134.4", "h216.8" ] ],
+    [ "bb1:10t.e", "uno:8", "black", [ "v124.8", "h86" ] ],
+    [ "bb1:11t.e", "uno:9", "#8f4814", [ "v124.8", "h66.4" ] ],
+    [ "bb1:10b.j", "uno:10", "red", [ "h-9.6", "v19.2", "h76.1" ] ],
+    [ "bb1:25b.f", "uno:11", "orange", [ "v57.6", "h-87" ] ],
+    [ "bb1:12b.f", "uno:12", "gold", [ "v96", "h28.3" ] ],
+    [ "bb1:26t.e", "uno:13", "green", [ "v124.8", "h-115.6" ] ],
+    [ "bb1:26b.f", "uno:7", "blue", [ "h9.6", "v96", "h-61.2" ] ],
+    [ "bb1:18t.a", "r11:2", "magenta", [ "v0" ] ],
+    [ "r11:1", "uno:6", "magenta", [ "v240", "h-99.7" ] ],
+    [ "bb1:25t.e", "uno:5", "gray", [ "v124.8", "h-23" ] ],
+    [ "r1:1", "bb1:5t.c", "", [ "$bb" ] ],
+    [ "r1:2", "bb1:5b.g", "", [ "$bb" ] ],
+    [ "r3:1", "bb1:1t.c", "", [ "$bb" ] ],
+    [ "r3:2", "bb1:1b.g", "", [ "$bb" ] ],
+    [ "sevseg1:DIG1", "bb1:18t.c", "", [ "$bb" ] ],
+    [ "sevseg1:DIG2", "bb1:19t.c", "", [ "$bb" ] ],
+    [ "sevseg1:A", "bb1:16t.c", "", [ "$bb" ] ],
+    [ "sevseg1:B", "bb1:17t.c", "", [ "$bb" ] ],
+    [ "sevseg1:C", "bb1:16b.h", "", [ "$bb" ] ],
+    [ "sevseg1:D", "bb1:19b.h", "", [ "$bb" ] ],
+    [ "sevseg1:E", "bb1:18b.h", "", [ "$bb" ] ],
+    [ "sevseg1:F", "bb1:20t.c", "", [ "$bb" ] ],
+    [ "sevseg1:G", "bb1:20b.h", "", [ "$bb" ] ],
+    [ "sevseg1:DP", "bb1:17b.h", "", [ "$bb" ] ],
+    [ "r2:1", "bb1:12b.j", "", [ "$bb" ] ],
+    [ "r2:2", "bb1:18b.j", "", [ "$bb" ] ],
+    [ "r4:1", "bb1:10b.i", "", [ "$bb" ] ],
+    [ "r4:2", "bb1:16b.i", "", [ "$bb" ] ],
+    [ "r5:1", "bb1:20t.b", "", [ "$bb" ] ],
+    [ "r5:2", "bb1:26t.b", "", [ "$bb" ] ],
+    [ "r6:1", "bb1:11t.a", "", [ "$bb" ] ],
+    [ "r6:2", "bb1:17t.a", "", [ "$bb" ] ],
+    [ "r7:1", "bb1:10t.b", "", [ "$bb" ] ],
+    [ "r7:2", "bb1:16t.b", "", [ "$bb" ] ],
+    [ "r8:1", "bb1:19b.j", "", [ "$bb" ] ],
+    [ "r8:2", "bb1:25b.j", "", [ "$bb" ] ],
+    [ "r9:1", "bb1:20b.i", "", [ "$bb" ] ],
+    [ "r9:2", "bb1:26b.i", "", [ "$bb" ] ]
+  ],
+  "dependencies": {}
+}

@@ -1,0 +1,7 @@
+Downloaded from https://wokwi.com/projects/440905453415943169
+
+Simulate this project on https://wokwi.com
+
+Contador não está funcionando adequadamente, foi desenvolvido com matriz para economizar código, mas não está funcionando adequadamente
+
+O contador não está apresentando adequadamente os números
