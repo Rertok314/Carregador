@@ -1,61 +1,72 @@
+const int ledVermelho = 3;
+const int ledVerde = 2;
+
+int qt_credito = 0;
+bool conectado = false;
+bool ja_carregou = false;
+
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(115200);
-  pinMode(11, OUTPUT);
-  pinMode(12, OUTPUT);
-  pinMode(13, OUTPUT);
+  pinMode(ledVermelho, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
 }
 
-// simulacao carregando
 void loop() {
-  // put your main code here, to run repeatedly:
   carregador_1();
 }
 
 void carregador_1() {
-    kw = 3;
-    int qt_kw = medidor(kw);
-    bool vaga = conector();
-    if(qt_kw != 0 and vaga == true) {
+  conectado = conector_1();
+
+  if (conectado) {
+    if (qt_credito == 0 && ja_carregou == false) {
+      qt_credito = credito_1();
+      ja_carregou = true;
+    }
+
+    if (qt_credito > 0) {
       carregando();
-  } else if (qt_kw == 0 and vaga == true) {
+      Serial.print("Crédito restante: ");
+      Serial.println(qt_credito);
+      qt_credito--;
+      qt_credito--;
+
+    } else {
       finalizado();
+      conectado = false;
+    }
   } else {
     disponivel();
   }
 }
 
-void medidor(kw) {
-  kw--;
+int credito_1() {
+  return 16; // valor inicial de crédito
 }
 
-bool conector() {
-  return true;
+bool conector_1() {
+  return true; // simulação: sempre conectado
 }
 
-// verde
 void carregando() {
-  Serial.println("Carregando");
-  digitalWrite(11, HIGH);
-  delay(1000);
-  digitalWrite(11, LOW);
-  delay(1000);
+  Serial.println("Carregando...");
+  digitalWrite(ledVermelho, LOW);
+  digitalWrite(ledVerde, HIGH);
+  delay(500);
+  digitalWrite(ledVerde, LOW);
+  delay(500);
 }
 
-// amarelo
 void disponivel() {
   Serial.println("Disponível");
-  digitalWrite(12, HIGH);
-  delay(1000);
-  digitalWrite(12, LOW);
+  digitalWrite(ledVermelho, LOW);  
+  digitalWrite(ledVerde, HIGH);
   delay(1000);
 }
 
-// vermelho
 void finalizado() {
-  Serial.println("Carregado");
-  digitalWrite(13, HIGH);
-  delay(1000);
-  digitalWrite(13, LOW);
-  delay(1000);
+  Serial.println("Carregado!");
+  digitalWrite(ledVermelho, HIGH);
+  digitalWrite(ledVerde, LOW);
+  delay(2000);
 }
