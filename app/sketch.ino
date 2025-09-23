@@ -204,8 +204,11 @@ void inserirCredito() {
 
 void digitarCampo(String &campo, String nomeCampo) {
   if (tecla >= '0' && tecla <= '9') {
+    // Maxlen Cpf para delimitar em até 11 digitos
     int maxLen = (nomeCampo == "CPF") ? 11 : 15;
-    if (campo.length() < maxLen) campo += tecla;
+    // Maxlen Telefone para delimitar em até 11 digitos
+    int Maxlen = (nomeCampo == "TELEFONE") ? 11 : 15;
+    if (campo.length() < maxLen && campo.length() < Maxlen) campo += tecla;
     mostrarDado(nomeCampo, campo);
   } 
   else if (tecla == '*') { 
