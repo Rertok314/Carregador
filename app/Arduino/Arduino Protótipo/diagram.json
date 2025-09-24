@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "author": "ETC_TY_B_05_AJINKYA MORE",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 64.81, "left": 4.47, "attrs": {} },
+    {
+      "type": "wokwi-membrane-keypad",
+      "id": "keypad1",
+      "top": -359.18,
+      "left": 27.8,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": 101.78,
+      "left": 344.72,
+      "attrs": { "pins": "i2c" }
+    }
+  ],
+  "connections": [
+    [ "keypad1:R1", "uno:13", "green", [ "v0" ] ],
+    [ "keypad1:R2", "uno:12", "green", [ "v0" ] ],
+    [ "uno:11", "keypad1:R3", "green", [ "v0" ] ],
+    [ "keypad1:R4", "uno:10", "green", [ "v0" ] ],
+    [ "keypad1:C1", "uno:9", "green", [ "v0" ] ],
+    [ "keypad1:C2", "uno:8", "green", [ "v0" ] ],
+    [ "uno:7", "keypad1:C3", "green", [ "v-78.59", "h-7.83" ] ],
+    [ "keypad1:C4", "uno:6", "green", [ "v14.05", "h6.82" ] ],
+    [ "uno:A5", "lcd1:SCL", "green", [ "v31.09", "h78.62", "v-123.61" ] ],
+    [ "lcd1:SDA", "uno:A4", "green", [ "h-15.48", "v142.25", "h-83.93" ] ],
+    [ "lcd1:VCC", "uno:5V", "red", [ "h-20.05", "v167.01", "h-164.82" ] ],
+    [ "lcd1:GND", "uno:GND.2", "black", [ "h-29.21", "v193.29", "h-139.64" ] ]
+  ],
+  "dependencies": {}
+}
