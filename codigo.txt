@@ -1,0 +1,273 @@
+#include <Keypad.h>
+#include <LiquidCrystal_I2C.h>
+
+//-----------------PENDENCIAS------------------
+// Criar um campo de validação do telefone com SMS
+// Criar um campo de confirmação para o usuario confirmar o telefone e o CPF
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+const int ledVermelho = 4;
+const int ledVerde = 5;
+const int botao_verde = 1;
+const int botao_vermelho = 3;
+const int botao_amarelo = 0;
+
+const byte rows = 4;
+const byte cols = 4;
+char keys[rows][cols] = {
+  { '1','2','3','A'},
+  { '4','5','6','B'},
+  { '7','8','9','C'},
+  { '*','0','#','D'}
+};
+
+byte rowPins[rows] = {13, 12, 11, 10};
+byte colPins[cols] = {9, 8, 7, 6};
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, rows, cols);
+
+// ------------------ VARIÁVEIS ------------------
+String cpf = "";
+String telefone = "";
+bool cpfConfirmado = false;
+bool telefoneConfirmado = false;
+int saldo = 0;
+
+// Máquina de estados
+enum Estado { DISPONIVEL, DIGITANDO_CPF, DIGITANDO_TELEFONE, MOSTRAR_SALDO, FINALIZADO, CARREGANDO };
+Estado estadoAtual = DISPONIVEL;
+
+char tecla; // tecla pressionada atual
+
+// ------------------ SETUP ------------------
+void setup() {
+  pinMode(ledVermelho, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+  pinMode(botao_verde, INPUT_PULLUP);
+  pinMode(botao_vermelho, INPUT_PULLUP);
+  pinMode(botao_amarelo, INPUT_PULLUP);
+
+  Serial.begin(115200);
+  lcd.init();
+  lcd.backlight();
+  lcd.print("Iniciando...");
+  delay(4000);
+  lcd.clear();
+  lcd.noBacklight();
+  mostrarDisponivel();
+}
+
+// ------------------ LOOP ------------------
+void loop() {
+  tecla = keypad.getKey();
+  switch (estadoAtual) {
+    case DISPONIVEL:
+      lcd.noBacklight();
+      digitalWrite(ledVerde, HIGH);
+      digitalWrite(ledVermelho, LOW);
+      if (tecla == 'D') {
+        estadoAtual = DIGITANDO_CPF;
+        cpf = "";
+        lcd.backlight();
+        mostrarDado("CPF", cpf);
+      }
+      break;
+
+    case DIGITANDO_CPF:
+      digitarCampo(cpf, "CPF");
+      break;
+
+    case DIGITANDO_TELEFONE:
+      digitarCampo(telefone, "TELEFONE");
+      break;
+
+    case MOSTRAR_SALDO:
+      consultarSaldo();
+      break;
+
+    case CARREGANDO:
+      piscandoLEDverde();
+      break;
+
+    case FINALIZADO:
+      lcd.clear();
+      lcd.backlight();
+      lcd.print("Finalizado!");
+      lcd.setCursor(0,1);
+      lcd.print("Libere a vaga");
+      digitalWrite(ledVerde, LOW);
+      digitalWrite(ledVermelho, HIGH);
+      delay(5000);
+      lcd.clear();
+      estadoAtual = DISPONIVEL;
+      mostrarDisponivel();
+      break;
+  }
+}
+
+// ------------------ FUNÇÕES ------------------
+
+void mostrarDisponivel() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Disponivel...");
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print("Pressione D");
+  lcd.noBacklight();
+  digitalWrite(ledVerde, LOW);
+  digitalWrite(ledVermelho, LOW);
+}
+
+void consultarSaldo(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Consultando seu");
+  lcd.setCursor(0,1);
+  lcd.print("saldo...");
+  for(int i=0;i<5;i++){
+    lcd.noBacklight();
+    delay(500);
+    lcd.backlight();
+    delay(500);
+  }
+  mostrarSaldo();
+}
+
+void mostrarSaldo() {
+  lcd.clear();
+  lcd.noBacklight();
+  delay(500);
+  lcd.backlight();
+  delay(500);
+  lcd.setCursor(0, 0);
+
+  if (saldo == 0) {
+    lcd.print("Saldo: R$ 0,00");
+  } else {
+    lcd.print("Saldo: R$ ");
+    lcd.print(saldo);
+  }
+
+  lcd.setCursor(0, 1);
+  lcd.print("Inserir credito?");
+
+  while (true) {
+    bool botaoSim = digitalRead(botao_verde);
+    bool botaoNao = digitalRead(botao_vermelho);
+    if (botaoSim == LOW) {
+      inserirCredito();
+      break;
+    } else if (botaoNao == LOW) {
+      lcd.clear();
+      estadoAtual = CARREGANDO;
+      break;
+    }
+  }
+}
+
+void inserirCredito() {
+  String valor = "";
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Digite o valor:");
+  lcd.setCursor(0,1);
+
+  while (true) {
+    char teclaCredito = keypad.getKey();
+    if (teclaCredito) {
+      if (teclaCredito >= '0' && teclaCredito <= '9') {
+        valor += teclaCredito;
+        lcd.print(teclaCredito);
+      } else if (teclaCredito == 'D') {
+        int valorInserido = valor.toInt();
+        saldo += valorInserido;
+        lcd.clear();
+        lcd.print("Adicionado: R$");
+        lcd.setCursor(0, 1);
+        lcd.print(valorInserido);
+        delay(2000);
+        lcd.clear();
+        estadoAtual = CARREGANDO;
+        return;
+      } else if (teclaCredito == '*') {
+        if (valor.length() > 0) {
+          valor.remove(valor.length() - 1);
+          lcd.setCursor(0, 1);
+          lcd.print("                ");
+          lcd.setCursor(0, 1);
+          lcd.print(valor);
+        }
+      }
+    }
+  }
+}
+
+void digitarCampo(String &campo, String nomeCampo) {
+  bool botaoSim = digitalRead(botao_verde);
+  //botaoNao = digitalRead(botao_vermelho); FALTA CODAR O PARTE DO CANCELAR PARA VOLTAR UMA OPÇÃO
+  bool botaoLimpar = digitalRead(botao_amarelo);  
+  if (tecla >= '0' && tecla <= '9') {
+    // Maxlen Cpf para delimitar em até 11 digitos
+    int maxLen = (nomeCampo == "CPF") ? 11 : 15;
+    // Maxlen Telefone para delimitar em até 11 digitos
+    int Maxlen = (nomeCampo == "TELEFONE") ? 11 : 15;
+    if (campo.length() < maxLen && campo.length() < Maxlen) campo += tecla;
+    mostrarDado(nomeCampo, campo);
+  } 
+  else if (botaoLimpar == LOW) { 
+    campo = "";
+    mostrarDado(nomeCampo, campo);
+  }
+  // Falta criar a opção do botao vermelho cancelar 
+  else if (botaoSim == LOW) {
+    if (nomeCampo == "CPF") {
+      if (campo.length() != 11) {
+        lcd.clear(); lcd.print("CPF incompleto!"); delay(1500);
+        mostrarDado("CPF", campo);
+      } else {
+        cpfConfirmado = true;
+        lcd.clear(); lcd.print("CPF cadastrado!"); lcd.setCursor(0, 1); lcd.print(campo);
+        delay(1500);
+        estadoAtual = DIGITANDO_TELEFONE;
+        telefone = "";
+        mostrarDado("TELEFONE", telefone);
+      }
+    } else if (nomeCampo == "TELEFONE") {
+      if (campo.length() < 8) {
+        lcd.clear(); lcd.print("Telefone invalido!"); delay(1500);
+        mostrarDado("TELEFONE", campo);
+      } else {
+        telefoneConfirmado = true;
+        lcd.clear(); lcd.print("Tel. cadastrado!"); lcd.setCursor(0, 1); lcd.print(campo);
+        delay(1000);
+        estadoAtual = MOSTRAR_SALDO;
+        Serial.println("Registro completo:");
+        Serial.println("CPF: " + cpf);
+        Serial.println("Telefone: " + telefone);
+      }
+    }
+  }
+}
+
+void mostrarDado(String nomeCampo, String valor) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  if (nomeCampo == "CPF") lcd.print("Digite CPF:");
+  else lcd.print("Digite telefone:");
+  lcd.setCursor(0, 1);
+  lcd.print(valor);
+}
+
+void piscandoLEDverde() {
+  lcd.clear();
+  lcd.print("Carregando...");
+  for (int i=0; i < 6; i++) {
+    digitalWrite(ledVerde, HIGH);
+    delay(500);
+    digitalWrite(ledVerde, LOW);
+    delay(500);
+  }
+  estadoAtual = FINALIZADO;
+}
