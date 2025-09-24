@@ -22,6 +22,10 @@ char keys[rows][cols] = {
   { '*','0','#','D'}
 };
 
+bool botaoSim = digitalRead(botao_verde);
+bool botaoNao = digitalRead(botao_vermelho);
+bool botaoLimpar = digitalRead(botao_amarelo); 
+
 byte rowPins[rows] = {13, 12, 11, 10};
 byte colPins[cols] = {9, 8, 7, 6};
 
