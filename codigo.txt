@@ -3,7 +3,7 @@
 
 //-----------------PENDENCIAS------------------
 // Criar um campo de validação do telefone com SMS
-// Criar um campo de confirmação para o usuario confirmar o telefone e o CPF
+// Criar um campo de confirmação para o usuario confirmar o telefone
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
