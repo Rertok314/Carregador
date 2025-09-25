@@ -39,7 +39,7 @@ bool telefoneConfirmado = false;
 int saldo = 0;
 
 // Máquina de estados
-enum Estado { DISPONIVEL, DIGITANDO_CPF, DIGITANDO_TELEFONE, MOSTRAR_SALDO, FINALIZADO, CARREGANDO };
+enum Estado { DISPONIVEL, DIGITANDO_CPF, CONFIRMANDO_CPF, DIGITANDO_TELEFONE, CONFIRMANDO_SMS, MOSTRAR_SALDO, FINALIZADO, CARREGANDO };
 Estado estadoAtual = DISPONIVEL;
 
 char tecla; // tecla pressionada atual
@@ -80,6 +80,10 @@ void loop() {
 
     case DIGITANDO_CPF:
       digitarCampo(cpf, "CPF");
+      break;
+
+    case CONFIRMANDO_CPF:
+      confirmarCPF();
       break;
 
     case DIGITANDO_TELEFONE:
@@ -137,6 +141,40 @@ void consultarSaldo(){
     delay(500);
   }
   mostrarSaldo();
+}
+
+void confirmarCPF() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("CONFIRMA CPF:");
+  lcd.setCursor(0, 1);
+  lcd.print(cpf);
+  delay(1000);
+
+  while (true) {
+    bool botaoSimConfirmacao = digitalRead(botao_verde);
+    bool botaoNaoConfirmacao = digitalRead(botao_vermelho);
+
+    if (botaoSimConfirmacao == false) {
+      cpfConfirmado = true;
+      lcd.clear();
+      lcd.print("CPF confirmado!");
+      delay(1500);
+      estadoAtual = DIGITANDO_TELEFONE;
+      telefone = "";
+      mostrarDado("TELEFONE", telefone);
+      break;
+    } else if (botaoNaoConfirmacao == false) {
+      cpfConfirmado = false;
+      lcd.clear();
+      lcd.print("CPF nao confirmado!");
+     delay(1500);
+      estadoAtual = DIGITANDO_CPF;
+     cpf = "";
+      mostrarDado("CPF", cpf);
+      break;
+    }
+  }
 }
 
 void mostrarSaldo() {
@@ -230,14 +268,11 @@ void digitarCampo(String &campo, String nomeCampo) {
       if (campo.length() != 11) {
         lcd.clear(); lcd.print("CPF incompleto!"); delay(1500);
         mostrarDado("CPF", campo);
-      } else {
-        cpfConfirmado = true;
-        lcd.clear(); lcd.print("CPF cadastrado!"); lcd.setCursor(0, 1); lcd.print(campo);
-        delay(1500);
-        estadoAtual = DIGITANDO_TELEFONE;
-        telefone = "";
-        mostrarDado("TELEFONE", telefone);
-      }
+      } if (campo.length() == 11) {
+          estadoAtual = CONFIRMANDO_CPF;
+          return; // A confirmação real do CPF será tratada na função confirmarCPF()
+
+        }
     } else if (nomeCampo == "TELEFONE") {
       if (campo.length() < 8) {
         lcd.clear(); lcd.print("Telefone invalido!"); delay(1500);
