@@ -1,6 +1,6 @@
 Carregador
 
-Projeto localizado na URL https://wokwi.com/projects/442931447442377729
+Projeto localizado na URL https://wokwi.com/projects/443529466354505729
 
 Projeto de Práticas Extensionistas e IOT
 
